@@ -19,6 +19,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,45 +49,35 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun DecoupledConstraintLayout() {
-    BoxWithConstraints {
-        val constraints = if (maxWidth < maxHeight) {
-            decoupledConstraints(margin = 16.dp) // Portrait constraints
-        } else {
-            decoupledConstraints(margin = 32.dp) // Landscape constraints
-        }
+fun TwoTexts(modifier: Modifier = Modifier, text1: String, text2: String) {
+    Row(modifier = modifier.height(IntrinsicSize.Min)) {
+        Text(
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 4.dp)
+                .wrapContentWidth(Alignment.Start),
+            text = text1
+        )
 
-        ConstraintLayout(constraints) {
-            Button(
-                onClick = { /* Do something */ },
-                modifier = Modifier.layoutId("button")
-            ) {
-                Text("Button")
-            }
+        Divider(color = Color.Black, modifier = Modifier.fillMaxHeight().width(1.dp))
 
-            Text("Text", Modifier.layoutId("text"))
-        }
-    }
-}
+        Text(
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 4.dp)
+                .wrapContentWidth(Alignment.End),
 
-private fun decoupledConstraints(margin: Dp): ConstraintSet {
-    return ConstraintSet {
-        val button = createRefFor("button")
-        val text = createRefFor("text")
-
-        constrain(button) {
-            top.linkTo(parent.top, margin= margin)
-        }
-        constrain(text) {
-            top.linkTo(button.bottom, margin)
-        }
+            text = text2
+        )
     }
 }
 
 @Preview
 @Composable
-fun DecoupledConstraintLayoutPreview() {
+fun TwoTextsPreview() {
     LayoutsCodeLabTheme {
-        DecoupledConstraintLayout()
+        Surface {
+            TwoTexts(text1 = "Hi", text2 = "there")
+        }
     }
 }
