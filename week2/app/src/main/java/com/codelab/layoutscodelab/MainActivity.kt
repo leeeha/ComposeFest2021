@@ -45,30 +45,43 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ConstraintLayoutContent() {
     ConstraintLayout {
-        // Create references for the composables to constrain
-        val (button, text) = createRefs()
+        // Creates references for the three composables
+        // in the ConstraintLayout's body
+        val (button1, button2, text) = createRefs()
 
         Button(
             onClick = { /* Do something */ },
-            // Assign reference "button" to the Button composable
-            // and constrain it to the top of the ConstraintLayout
-            modifier = Modifier.constrainAs(button) {
+            modifier = Modifier.constrainAs(button1) {
+                // button1의 top을 parent의 top에 붙인다.
                 top.linkTo(parent.top, margin = 16.dp)
             }
         ) {
-            Text("Button")
+            Text("Button 1")
         }
 
-        // Assign reference "text" to the Text composable
-        // and constrain it to the bottom of the Button composable
         Text("Text", Modifier.constrainAs(text) {
-            top.linkTo(button.bottom, margin = 16.dp)
-            // Centers Text horizontally in the ConstraintLayout
-            centerHorizontallyTo(parent)
+            // text의 top을 button1의 bottom에 붙인다.
+            top.linkTo(button1.bottom, margin = 16.dp)
+            // text의 중앙에 button1의 오른쪽 끝이 오도록
+            centerAround(button1.end)
         })
+
+        // button1과 text가 끝나는 지점에 barrier 생성
+        val barrier = createEndBarrier(button1, text)
+
+        Button(
+            onClick = { /* Do something */ },
+            modifier = Modifier.constrainAs(button2) {
+                // button2의 top을 parent의 top에 붙인다.
+                top.linkTo(parent.top, margin = 16.dp)
+                // button2의 start를 barrier에 붙인다.
+                start.linkTo(barrier)
+            }
+        ) {
+            Text("Button 2")
+        }
     }
 }
-
 @Preview
 @Composable
 fun ConstraintLayoutContentPreview() {
