@@ -23,6 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import androidx.constraintlayout.compose.atLeast
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.codelab.layoutscodelab.ui.theme.LayoutsCodeLabTheme
@@ -43,49 +45,25 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ConstraintLayoutContent() {
+fun LargeConstraintLayout() {
     ConstraintLayout {
-        // Creates references for the three composables
-        // in the ConstraintLayout's body
-        val (button1, button2, text) = createRefs()
+        val text = createRef()
 
-        Button(
-            onClick = { /* Do something */ },
-            modifier = Modifier.constrainAs(button1) {
-                // button1의 top을 parent의 top에 붙인다.
-                top.linkTo(parent.top, margin = 16.dp)
+        val guideline = createGuidelineFromStart(fraction = 0.5f)
+        Text(
+            "This is a very very very very very very very long text",
+            Modifier.constrainAs(text) {
+                linkTo(start = guideline, end = parent.end)
+                width = Dimension.preferredWrapContent.atLeast(100.dp)
             }
-        ) {
-            Text("Button 1")
-        }
-
-        Text("Text", Modifier.constrainAs(text) {
-            // text의 top을 button1의 bottom에 붙인다.
-            top.linkTo(button1.bottom, margin = 16.dp)
-            // text의 중앙에 button1의 오른쪽 끝이 오도록
-            centerAround(button1.end)
-        })
-
-        // button1과 text가 끝나는 지점에 barrier 생성
-        val barrier = createEndBarrier(button1, text)
-
-        Button(
-            onClick = { /* Do something */ },
-            modifier = Modifier.constrainAs(button2) {
-                // button2의 top을 parent의 top에 붙인다.
-                top.linkTo(parent.top, margin = 16.dp)
-                // button2의 start를 barrier에 붙인다.
-                start.linkTo(barrier)
-            }
-        ) {
-            Text("Button 2")
-        }
+        )
     }
 }
+
 @Preview
 @Composable
-fun ConstraintLayoutContentPreview() {
+fun LargeConstraintLayoutPreview() {
     LayoutsCodeLabTheme {
-        ConstraintLayoutContent()
+        LargeConstraintLayout()
     }
 }
